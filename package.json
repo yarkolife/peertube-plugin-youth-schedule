@@ -1,0 +1,50 @@
+{
+  "name": "peertube-plugin-youth-schedule",
+  "description": "PeerTube plugin: youth protection schedule (configurable HH:mm slots and end time)",
+  "version": "0.1.2",
+  "author": "yarkolife",
+  "license": "AGPL-3.0",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/yarkolife/peertube-plugin-youth-schedule"
+  },
+  "bugs": "https://github.com/yarkolife/peertube-plugin-youth-schedule/issues",
+  "homepage": "https://github.com/yarkolife/peertube-plugin-youth-schedule",
+  "engine": {
+    "peertube": ">=5.2.0"
+  },
+  "library": "./main.js",
+  "clientScripts": [
+    {
+      "script": "dist/video-edit-client-plugin.js",
+      "scopes": [
+        "video-edit"
+      ]
+    },
+    {
+      "script": "dist/video-watch-client-plugin.js",
+      "scopes": [
+        "video-watch"
+      ]
+    }
+  ],
+  "css": [],
+  "peertubeUpdatePolicy": "automatic",
+  "keywords": [
+    "peertube",
+    "plugin",
+    "youth",
+    "schedule",
+    "schutz"
+  ],
+  "scripts": {
+    "prepare": "npm run build",
+    "build": "node ./scripts/build.js"
+  },
+  "staticDirs": {},
+  "translations": {},
+  "devDependencies": {
+    "esbuild": "^0.17.11"
+  },
+  "dependencies": {}
+}
