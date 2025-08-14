@@ -53,7 +53,8 @@ async function register({ registerHook, storageManager, getRouter, registerSetti
 		try {
 			const videoUuid = req.params.uuid
 			const meta = await storageManager.getData('youth-schedule-' + videoUuid)
-			if (!meta) return res.json({ allowed: true })
+			// Блокируем только если в метаданных включён чекбокс
+			if (!meta || !meta.youthSensitive) return res.json({ allowed: true, debug: { reason: 'not-sensitive', youthSensitive: !!(meta && meta.youthSensitive) } })
 
 			const timeSource = (await getSetting(settingsManager, 'timeSource')) || 'server'
 			const endTimeStr = normalizeTimeString((await getSetting(settingsManager, 'endTime')) || '06:00')
@@ -82,10 +83,15 @@ async function register({ registerHook, storageManager, getRouter, registerSetti
 				openMinutes = Number.isFinite(h) ? clampMinutes(h * 60) : 0
 			}
 
-			if (!openMinutes) return res.json({ allowed: true })
+			if (!openMinutes) return res.json({ allowed: true, debug: { reason: 'no-openMinutes', youthSensitive: true } })
 
 			const allowed = isWithinAllowedWindowMinutes(currentMinutes, openMinutes, endMinutes)
-			return res.json({ allowed, openLabel: minutesToLabel(openMinutes), endLabel: endTimeStr })
+			return res.json({
+				allowed,
+				openLabel: minutesToLabel(openMinutes),
+				endLabel: endTimeStr,
+				debug: { timeSource, currentMinutes, openMinutes, endMinutes }
+			})
 		} catch (err) {
 			res.status(500).json({ error: err.message })
 		}
